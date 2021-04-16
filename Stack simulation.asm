@@ -1,12 +1,12 @@
 .data
-	mesMenu:	.asciiz "\nWybierz co chcesz zrobic (1 - wpisac liczbe (push), 2 - wypisac liczbe (pop))\n"
-	input:		.asciiz "\nProsze wporwadzic liczbe: "
-	ifNext:		.asciiz "\nCzy chcesz wprowadzic kolejna liczbe? (1 - tak, 0 - nie)\n"
-	mesPrint:	.asciiz "\nCzy chcesz wypisac liczbe? (1 - tak, 0 - nie (wyjscie do menu))\n"
+	mesMenu:	.asciiz "\nChoose what you want to do (1 - write a number (push), 2 - write a number (pop))\n"
+	input:		.asciiz "\nPlease enter the number: "
+	ifNext:		.asciiz "\nDo you want to enter another number? (1 - yes, 0 - no)\n"
+	mesPrint:	.asciiz "\nDo you want to print a number? (1 - yes, 0 - no (exit to the menu))\n"
 	
 .text
 	main:
-		# pytanie uzytkownika co chce zorbic
+		# asking the user what he wants to do
 		li $v0, 4
     		la $a0, mesMenu
     		syscall
@@ -26,7 +26,7 @@
 		syscall
 		
 		
-	pushNr: # pobieramy liczbe od uzytkownika
+	pushNr: # get a number from the user
 		li $v0, 4
     		la $a0, input
     		syscall
@@ -34,14 +34,14 @@
     		li  $v0, 6
     		syscall
     		
-    		# przechowujemy liczbe na stosie
+    		# store the number on the stack
     		s.s $f0, 0($sp)
     		addi $sp, $sp, 4
     		
-    		# zliczamy ile liczb dodalismy na stos
+    		# count how many numbers we added on the stack
     		addi $t0, $t0, 1
     		
-    		# pytanie o kolejna liczbe
+    		# question for the next number
     		li $v0, 4
 		la $a0, ifNext
     		syscall
@@ -55,8 +55,8 @@
     		nop
     		
     		
-    	print: # wyswietlanie wpisanych liczb
-    		# pytanie uzytkownika co chce zrobic
+    	print: # displaying the entered numbers
+    		# asking the user what he wants to do
     		li $v0, 4
     		la $a0, mesPrint
     		syscall
@@ -66,17 +66,17 @@
     		blt $v0, 1, main
     		nop
     		
-    		# jesli wypisalismy wszystkie nasze liczby to nie mozemy kontynuowac
+    		# if we have listed all our numbers then we cannot continue
     		ble $t0, 0, main
     		
-    		# wypisywanie ze stosu i wyswietlanie
+    		# printing from the stack and displaying
     		addi $sp, $sp, -4
     		l.s $f12, 0($sp)
     		
     		li $v0, 2
     		syscall
     		
-    		# zmieniamu ilosc liczb ktore zostaly zapisane na stosie
+    		# change the number of numbers that have been saved on the stack
     		sub $t0, $t0, 1
     		
     		j print
